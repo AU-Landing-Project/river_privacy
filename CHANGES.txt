@@ -2,6 +2,11 @@
 
 x.x:
 
+1.1 (09/12/2012):
+
+- Fixed issue with admin activity missing items
+- No longer resets view location
+
 1.0 (05/19/2012):
 
 - Initial Release

@@ -8,7 +8,7 @@
 
 function river_privacy_init(){
 	if(elgg_get_plugin_setting('hide_old_items', 'river_privacy') != 'no'){
-		elgg_set_view_location('page/components/list', elgg_get_plugins_path() . 'river_privacy/views_override/');
+		elgg_set_config('river_privacy_legacy', TRUE);
 	}	
 	
 	// set the river item to private if it's not an object

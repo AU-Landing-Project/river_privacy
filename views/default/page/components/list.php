@@ -26,9 +26,13 @@ $offset_key = elgg_extract('offset_key', $vars, 'offset');
 $position = elgg_extract('position', $vars, 'after');
 
 // remove non-object items for anyone who's not the subject
-if(is_array($items) && ($items[0] instanceof ElggRiverItem)){
-	foreach($items as $key => $item){
-		if($item->type != 'object' && $item->subject_guid != elgg_get_logged_in_user_guid()){
+if (is_array($items) && elgg_get_config('river_privacy_legacy')) {
+	foreach ($items as $key => $item) {
+		if ($item instanceof ElggRiverItem
+            && $item->type != 'object'
+            && $item->subject_guid != elgg_get_logged_in_user_guid()
+            && !elgg_is_admin_logged_in()) {
+      
 			unset($items[$key]);
 		}
 	}
