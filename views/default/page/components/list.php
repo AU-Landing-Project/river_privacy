@@ -39,7 +39,9 @@ if (is_array($items) && elgg_get_config('river_privacy_legacy')) {
 }
 
 // reset key values
-$items = array_merge(array(), $items);
+if (is_array($items)) {
+  $items = array_merge(array(), $items);
+}
 
 $list_class = 'elgg-list';
 if (isset($vars['list_class'])) {

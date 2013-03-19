@@ -2,6 +2,9 @@
 
 x.x:
 
+1.2 ():
+ - fixes php warning for invalid array
+
 1.1 (09/12/2012):
 
 - Fixed issue with admin activity missing items
