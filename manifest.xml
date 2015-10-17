@@ -4,7 +4,7 @@
     <id>river_privacy</id>
     <author>Matt Beckett</author>
     <email>matt@mattbeckett.me</email>
-    <version>2.0.0</version>
+    <version>3.0.0</version>
     <description>Sets non-object oriented river items to private access (eg. friend relationships)</description>
     <website>http://landing.athabascau.ca</website>
     <copyright>(C) Matt Beckett, 2012</copyright>
@@ -13,7 +13,7 @@
     <!-- All plugins must require either elgg_version or elgg_release. -->
     <requires>
         <type>elgg_release</type>
-        <version>1.9</version>
+        <version>1.10</version>
     </requires>
   
     <category>Miscellaneous</category>
