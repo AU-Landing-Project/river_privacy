@@ -1,30 +1,36 @@
 <?php
 
-/**
- * 	River Privacy
- * 	Makes non-object oriented river entries private
- * 	eg. friendships
- */
+namespace AU\RiverPrivacy;
 
-function river_privacy_init(){
-	if(elgg_get_plugin_setting('hide_old_items', 'river_privacy') != 'no'){
-		elgg_set_config('river_privacy_legacy', TRUE);
-	}	
-	
+const PLUGIN_ID = 'river_privacy';
+
+elgg_register_event_handler('init', 'system', __NAMESPACE__ . '\\init');
+
+/**
+ *	Plugin Init
+ */
+function init() {
 	// set the river item to private if it's not an object
-	elgg_register_plugin_hook_handler('creating', 'river', 'river_privacy_creating_river');
+	elgg_register_plugin_hook_handler('creating', 'river', __NAMESPACE__ . '\\creating_river_hook');
 }
 
 
-//
-// hook called before river creation
-// return associative array of parameters to create the river entry
-function river_privacy_creating_river($hook, $type, $returnvalue, $params){
-	if($returnvalue['type'] != 'object'){
+ 
+/**
+ * hook called before river creation
+ * return associative array of parameters to create the river entry
+ * 
+ * @param type $hook
+ * @param type $type
+ * @param string $returnvalue
+ * @param type $params
+ * @return string
+ */
+function creating_river_hook($hook, $type, $returnvalue, $params) {
+
+	if ($returnvalue['type'] != 'object') {
 		$returnvalue['access_id'] = ACCESS_PRIVATE;
 	}
-	
+
 	return $returnvalue;
 }
-
-elgg_register_event_handler('init', 'system', 'river_privacy_init');

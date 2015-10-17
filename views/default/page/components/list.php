@@ -6,7 +6,7 @@
  *
  * @uses $vars['items']       Array of ElggEntity or ElggAnnotation objects
  * @uses $vars['offset']      Index of the first list item in complete list
- * @uses $vars['limit']       Number of items per page
+ * @uses $vars['limit']       Number of items per page. Only used as input to pagination.
  * @uses $vars['count']       Number of items in the complete list
  * @uses $vars['base_url']    Base URL of list (optional)
  * @uses $vars['pagination']  Show pagination? (default: true)
@@ -14,6 +14,7 @@
  * @uses $vars['full_view']   Show the full view of the items (default: false)
  * @uses $vars['list_class']  Additional CSS class for the <ul> element
  * @uses $vars['item_class']  Additional CSS class for the <li> elements
+ * @uses $vars['no_results']  Message to display if no results
  */
 
 $items = $vars['items'];
@@ -24,9 +25,19 @@ $base_url = elgg_extract('base_url', $vars, '');
 $pagination = elgg_extract('pagination', $vars, true);
 $offset_key = elgg_extract('offset_key', $vars, 'offset');
 $position = elgg_extract('position', $vars, 'after');
+$no_results = elgg_extract('no_results', $vars, '');
+
+if (!$items && $no_results) {
+	echo "<p>$no_results</p>";
+	return;
+}
+
+if (!is_array($items) || count($items) == 0) {
+	return;
+}
 
 // remove non-object items for anyone who's not the subject
-if (is_array($items) && elgg_get_config('river_privacy_legacy')) {
+if (is_array($items) && elgg_get_plugin_setting('hide_old_items', 'river_privacy') != 'no') {
 	foreach ($items as $key => $item) {
 		if ($item instanceof ElggRiverItem
             && $item->type != 'object'
@@ -36,11 +47,6 @@ if (is_array($items) && elgg_get_config('river_privacy_legacy')) {
 			unset($items[$key]);
 		}
 	}
-}
-
-// reset key values
-if (is_array($items)) {
-  $items = array_merge(array(), $items);
 }
 
 $list_class = 'elgg-list';
@@ -66,20 +72,30 @@ if ($pagination && $count) {
 	));
 }
 
-if (is_array($items) && count($items) > 0) {
-	$html .= "<ul class=\"$list_class\">";
-	foreach ($items as $item) {
+$html .= "<ul class=\"$list_class\">";
+foreach ($items as $item) {
+	$li = elgg_view_list_item($item, $vars);
+	if ($li) {
+		$item_classes = array($item_class);
+
 		if (elgg_instanceof($item)) {
 			$id = "elgg-{$item->getType()}-{$item->getGUID()}";
+
+			$item_classes[] = "elgg-item-" . $item->getType();
+			$subtype = $item->getSubType();
+			if ($subtype) {
+				$item_classes[] = "elgg-item-" . $item->getType() . "-" . $subtype;
+			}
 		} else {
 			$id = "item-{$item->getType()}-{$item->id}";
 		}
-		$html .= "<li id=\"$id\" class=\"$item_class\">";
-		$html .= elgg_view_list_item($item, $vars);
-		$html .= '</li>';
+
+		$item_classes = implode(" ", $item_classes);
+
+		$html .= "<li id=\"$id\" class=\"$item_classes\">$li</li>";
 	}
-	$html .= '</ul>';
 }
+$html .= '</ul>';
 
 if ($position == 'before' || $position == 'both') {
 	$html = $nav . $html;

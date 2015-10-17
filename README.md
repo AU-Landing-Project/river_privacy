@@ -1,4 +1,4 @@
-River-Privacy-1.8.x
+River Privacy
 ===================
 
 Makes non-object oriented river items private - eg. friendship creation
